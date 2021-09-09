@@ -1,0 +1,73 @@
+#ifndef SAMPLE_COMMON_H
+#define SAMPLE_COMMON_H
+
+#include <vector>
+#include <getopt.h>
+#include <string.h>
+
+struct Args
+{
+    bool help{false};
+    std::vector<int> batchSize;
+    std::vector<std::vector<int>> input_shapes;
+};
+
+inline bool parseArgs(Args& args, int argc, char* argv[])
+{
+    while (1)
+    {
+        int arg;
+        static struct option long_options[] =
+        {
+            {"help", no_argument, 0, 'h'},
+            {"batch_size", required_argument, 0, 'b'},
+            {"input_shapes", required_argument,0,'i'}
+        };
+        int option_index = 0;
+        arg = getopt_long(argc, argv, "he:b:s:i:w:r:g", long_options, &option_index);
+        if (arg == -1)
+        {
+            break;
+        }
+        switch (arg)
+        {
+        case 'h': args.help = true; return false;
+        case 'b':
+            if (optarg)
+            {
+                args.batchSize.push_back(std::stoi(optarg));
+            }
+            else
+            {
+                std::cerr << "ERROR: --batch_size requires option argument" << std::endl;
+                return false;
+            }
+            break;
+        case 'i':
+            if (optarg)
+            {
+                std::vector<int> input_shape;
+                const char *split = ",";
+                char *p = strtok(optarg, split);
+                int num;
+                while (p != NULL)
+                {
+                    sscanf(p, "%d", &num);
+                    input_shape.push_back(num);
+                    p = strtok(NULL, split);
+                }
+                args.input_shapes.push_back(input_shape);
+
+            }
+            else{
+
+            }
+            break;
+        }
+
+    }
+    return true;
+}
+
+
+#endif // SAMPLE_COMMON_H
