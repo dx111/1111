@@ -1,0 +1,53 @@
+#include <iostream>
+#include "common.h"
+
+void printHelpInfo()
+{
+    std::cout << "usage: ./perf [-h] [-e ENGINE] [-b BATCH_SIZE] [-s SEQUENCE_LENGTH]\n";
+    std::cout << "               [-i ITERATIONS] [-w WARM_UP_RUNS] [-r RANDOM_SEED] [--enable_graph]\n";
+    std::cout << "\n";
+    std::cout << "BERT Inference Benchmark\n";
+    std::cout << "\n";
+    std::cout << "optional arguments:\n";
+    std::cout << "  -h, --help            show this help message and exit\n";
+    std::cout << "  -e ENGINE, --engine ENGINE\n";
+    std::cout << "                        Path to BERT TensorRT engine\n";
+    std::cout << "  -b BATCH_SIZE, --batch_size BATCH_SIZE\n";
+    std::cout << "                        Batch size(s) to benchmark. Can be specified multiple\n";
+    std::cout << "                        times for more than one batch size. This script\n";
+    std::cout << "                        assumes that the engine has been built with one\n";
+    std::cout << "                        optimization profile for each batch size, and that\n";
+    std::cout << "                        these profiles are in order of increasing batch size.\n";
+    std::cout << "  -s SEQUENCE_LENGTH, --sequence_length SEQUENCE_LENGTH\n";
+    std::cout << "                        Sequence length of the BERT model\n";
+    std::cout << "  -i ITERATIONS, --iterations ITERATIONS\n";
+    std::cout << "                        Number of iterations to run when benchmarking.\n";
+    std::cout << "  -w WARM_UP_RUNS, --warm_up_runs WARM_UP_RUNS\n";
+    std::cout << "                        Number of iterations to run prior to benchmarking.\n";
+    std::cout << "  -r RANDOM_SEED, --random_seed RANDOM_SEED\n";
+    std::cout << "                        Random seed.\n";
+    std::cout << "  --enable_graph\n";
+    std::cout << "                        Enable CUDA Graph.\n";
+    std::cout << std::endl;
+}
+
+auto main(int argc, char* argv[]) ->int {
+    Args args;
+
+    const bool argsOK = parseArgs(args, argc, argv);
+    if (args.help)
+    {
+        printHelpInfo();
+        return EXIT_SUCCESS;
+    }
+    std::cout<<"input nums "<<args.input_shapes.size()<<"\n";
+    for(int i = 0 ; i < args.input_shapes.size(); i++){
+        std::cout<<"tensor "<<i<<" shape: ";
+        for(int j = 0; j < args.input_shapes[i].size(); ++j){
+            std::cout<<args.input_shapes[i][j]<<",";
+        }
+        std::cout<<"\n";
+    }
+    std::cout << "Hello, Cloud Studio!" << std::endl;
+    return 0;
+}
